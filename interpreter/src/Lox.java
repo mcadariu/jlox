@@ -11,8 +11,6 @@ public class Lox {
     static boolean hadError = false;
 
     public static void main(String[] args) throws IOException {
-        //TIP Press <shortcut actionId="ShowIntentionActions"/> with your caret at the highlighted text
-        // to see how IntelliJ IDEA suggests fixing it.
         if (args.length > 1) {
             System.out.println("Usage: jlox [script]");
             System.exit(64);

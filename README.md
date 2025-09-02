@@ -1,2 +1,2 @@
 # jlox
-A tree-walking interpreter based on the book Crafting Interpreters by R. Nystrom
+A basic tree-walking interpreter developed by following the book "Crafting Interpreters" by R. Nystrom

@@ -8,6 +8,8 @@ import java.util.List;
 
 public class Lox {
 
+    private static final Interpreter interpreter = new Interpreter();
+
     static boolean hadError = false;
 
     public static void main(String[] args) throws IOException {
@@ -48,9 +50,9 @@ public class Lox {
         Parser parser = new Parser(tokens);
         Expr expression = parser.parse();
 
-        if(hadError) return;
+        if (hadError) return;
 
-        System.out.println(new AstPrinter().print(expression));
+        interpreter.interpret(expression);
     }
 
     static void error(int line, String message) {
@@ -63,7 +65,7 @@ public class Lox {
     }
 
     static void error(Token token, String message) {
-        if(token.type == TokenType.EOF) {
+        if (token.type == TokenType.EOF) {
             Lox.report(token.line, " at end", message);
         } else {
             Lox.report(token.line, " at '" + token.lexeme + "'", message);

@@ -1,13 +1,19 @@
-public class Interpreter implements Expr.Visitor<Object> {
+import java.util.List;
 
-    void interpret(Expr expression) {
+public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
+
+    void interpret(List<Stmt> statements) {
         try {
-            Object value = evaluate(expression);
-
-            System.out.println(stringify(value));
+           for(Stmt stmt: statements) {
+               execute(stmt);
+           }
         } catch (RuntimeException error) {
             System.out.println("Runtime error" + error.getMessage());
         }
+    }
+
+    private void execute(Stmt stmt) {
+        stmt.accept(this);
     }
 
     private String stringify(Object value) {
@@ -93,6 +99,19 @@ public class Interpreter implements Expr.Visitor<Object> {
                 return -(double) right;
         }
 
+        return null;
+    }
+
+    @Override
+    public Void visitExpressionStmt(Stmt.Expression stmt) {
+        evaluate(stmt.expression);
+        return null;
+    }
+
+    @Override
+    public Void visitPrintStmt(Stmt.Print stmt) {
+        Object value = evaluate(stmt.expression);
+        System.out.println(stringify(value));
         return null;
     }
 

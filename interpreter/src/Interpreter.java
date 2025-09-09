@@ -6,9 +6,9 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
 
     void interpret(List<Stmt> statements) {
         try {
-           for(Stmt stmt: statements) {
-               execute(stmt);
-           }
+            for (Stmt stmt : statements) {
+                execute(stmt);
+            }
         } catch (RuntimeException error) {
             System.out.println("Runtime error" + error.getMessage());
         }
@@ -23,7 +23,7 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
         if (value instanceof Double) {
             String text = value.toString();
 
-            if(text.endsWith(".0")) {
+            if (text.endsWith(".0")) {
                 text = text.substring(0, text.length() - 2);
             }
             return text;
@@ -48,15 +48,17 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
 
         switch (expr.operator.type) {
             case GREATER:
-                return (double) left > (double)right;
+                return (double) left > (double) right;
             case GREATER_EQUAL:
-                return (double) left >= (double)right;
+                return (double) left >= (double) right;
             case LESS:
-                return (double)left < (double)right;
+                return (double) left < (double) right;
             case LESS_EQUAL:
-                return (double)left <= (double)right;
-            case BANG_EQUAL: return !isEqual(left, right);
-            case EQUAL_EQUAL: return isEqual(left, right);
+                return (double) left <= (double) right;
+            case BANG_EQUAL:
+                return !isEqual(left, right);
+            case EQUAL_EQUAL:
+                return isEqual(left, right);
             case MINUS:
                 return (double) left - (double) right;
             case SLASH:
@@ -64,12 +66,12 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
             case STAR:
                 return (double) left * (double) right;
             case PLUS:
-                if(left instanceof Double && right instanceof Double) {
-                    return (double)left + (double)right;
+                if (left instanceof Double && right instanceof Double) {
+                    return (double) left + (double) right;
                 }
 
-                if(left instanceof String && right instanceof String) {
-                    return (String)left + (String) right;
+                if (left instanceof String && right instanceof String) {
+                    return (String) left + (String) right;
                 }
 
                 break;
@@ -80,7 +82,7 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
 
     private boolean isEqual(Object left, Object right) {
         if (left == null && right == null) return true;
-        if(left == null) return false;
+        if (left == null) return false;
 
         return left.equals(right);
     }
@@ -97,6 +99,20 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
     @Override
     public Object visitLiteralExpr(Expr.Literal expr) {
         return expr.value;
+    }
+
+    @Override
+    public Object visitLogicalExpr(Expr.Logical expr) {
+        Object left = evaluate(expr.left);
+
+        if (expr.operator.type == TokenType.OR) {
+            if (isTruthy(left)) return left;
+            else {
+                if (!isTruthy(left)) return evaluate(expr.right);
+            }
+        }
+
+        return evaluate(expr.right);
     }
 
     @Override
@@ -130,7 +146,7 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
         try {
             this.environment = environment;
 
-            for (Stmt statement: statements) {
+            for (Stmt statement : statements) {
                 execute(statement);
             }
         } finally {
@@ -145,6 +161,17 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
     }
 
     @Override
+    public Void visitIfStmt(Stmt.If stmt) {
+        if (isTruthy(evaluate(stmt.condition))) {
+            execute(stmt.thenBranch);
+        } else if (stmt.elseBranch != null) {
+            execute(stmt.elseBranch);
+        }
+
+        return null;
+    }
+
+    @Override
     public Void visitPrintStmt(Stmt.Print stmt) {
         Object value = evaluate(stmt.expression);
         System.out.println(stringify(value));
@@ -152,9 +179,17 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
     }
 
     @Override
+    public Void visitWhileStmt(Stmt.While stmt) {
+        while(isTruthy(evaluate(stmt.condition))) {
+            execute(stmt.body);
+        }
+        return null;
+    }
+
+    @Override
     public Void visitVarStmt(Stmt.Var stmt) {
-        Object value =  null;
-        if(stmt.initializer != null) {
+        Object value = null;
+        if (stmt.initializer != null) {
             value = evaluate(stmt.initializer);
         }
 

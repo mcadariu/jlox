@@ -1,5 +1,5 @@
 # jlox
-A basic tree-walking interpreter developed by following the excellent book [Crafting Interpreters](https://craftinginterpreters.com/) by R. Nystrom
+A tree-walking interpreter developed by following the excellent book [Crafting Interpreters](https://craftinginterpreters.com/) by R. Nystrom
 
 At the moment, it can run programs like:
 

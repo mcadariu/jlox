@@ -11,6 +11,7 @@ abstract class Expr {
    R visitLiteralExpr(Literal expr);
    R visitLogicalExpr(Logical expr);
    R visitVariableExpr(Variable expr);
+   R visitThisExpr(This expr);
    R visitUnaryExpr(Unary expr);
  }
   static class Assign extends Expr {
@@ -140,6 +141,18 @@ abstract class Expr {
   }
 
     final Token name;
+  }
+  static class This extends Expr {
+   This(Token keyword) {
+       this.keyword = keyword;
+    }
+
+   @Override
+  <R>  R accept(Visitor<R> visitor) {
+ return visitor.visitThisExpr(this);
+  }
+
+    final Token keyword;
   }
   static class Unary extends Expr {
    Unary(Token operator, Expr right) {

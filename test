@@ -1,10 +1,10 @@
-class Fibonacci {
+class Greeting {
   sayHello() {
     print "Hello superclass";
   }
 }
 
-class Sub < Fibonacci {
+class Sub < Greeting {
   sayHello() {
     super.sayHello();
     print "Hello subclass";

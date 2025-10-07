@@ -1,15 +1,21 @@
 # jlox
 A tree-walking interpreter for Lox, a general-purpose object-oriented language. Developed by following along the excellent book [Crafting Interpreters](https://craftinginterpreters.com/) by R. Nystrom.
 
-At the moment, it can run programs like:
+It can run programs like:
 
 ```
-fun fib(n) {
-    if (n <= 1) return n;
-    return fib(n - 2) + fib(n - 1);
+class Greeting {
+  sayHello() {
+    print "Hello superclass";
+  }
 }
 
-for (var i = 0; i < 20; i = i + 1) {
-    print fib(i);
+class Sub < Greeting {
+  sayHello() {
+    super.sayHello();
+    print "Hello subclass";
+  }
 }
+
+Sub().sayHello();
 ```

@@ -3,19 +3,28 @@ A tree-walking interpreter for Lox, a general-purpose object-oriented language. 
 
 It can run programs like:
 
-```
-class Greeting {
-  sayHello() {
-    print "Hello superclass";
-  }
+```java
+class Vehicle {
+    init(brand) {
+        this.brand = brand;
+    }
+
+    describe() {
+        return "This is a " + this.brand;
+    }
 }
 
-class Sub < Greeting {
-  sayHello() {
-    super.sayHello();
-    print "Hello subclass";
-  }
+class Car < Vehicle {
+    init(brand, model) {
+        super.init(brand);
+        this.model = model;
+    }
+
+    describe() {
+        return super.describe() + " " + this.model;
+    }
 }
 
-Sub().sayHello();
+var myCar = Car("Toyota", "Camry");
+print myCar.describe();
 ```
